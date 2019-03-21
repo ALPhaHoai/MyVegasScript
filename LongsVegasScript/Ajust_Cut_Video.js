@@ -9,7 +9,7 @@ import System;
 import ScriptPortal.Vegas;
 import System.Windows.Forms;
 import Microsoft.Win32;
-import Sony.Vegas.Script;
+import ScriptPortal.Vegas.Script;
 import System.Drawing.SystemColors;
 
 /* Vong for hoan hao
