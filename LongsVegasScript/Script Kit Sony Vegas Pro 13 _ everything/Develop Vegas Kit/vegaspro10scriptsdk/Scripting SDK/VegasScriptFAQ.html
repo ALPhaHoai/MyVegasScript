@@ -1,0 +1,1149 @@
+<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+    <title>Vegas Pro Scripting FAQs</title>
+    <style type="text/css">
+
+          .docTitle {
+          width: 820;
+          text-align: center;
+          font-size: 18pt;
+          font-weight: bold;
+          }
+
+          .docInfo {
+          width: 820;
+          text-align: right;
+          font-size: 10pt;
+          }
+
+          .tocSectionTitle {
+          margin-top: 30;
+          margin-left: 20;
+          width: 800;
+          font-size: 14pt;
+          font-weight: bold;
+          }
+
+          .tocSectionItems {
+          margin-top: 10;
+          margin-left: 10;
+          width: 810;
+          }
+
+          .HSECTION {
+          padding-top: 30;
+          width: 820;
+          font-size: 16pt;
+          font-weight: bold;
+          }
+
+          .HFAQ {
+          width: 820;
+          font-size: 14pt;
+          font-weight: bold;
+          }
+
+          .fragLang {
+          background-color: #fff0f0;
+          font-size: 10pt;
+          font-weight: bold;
+          margin-left: 20;
+          width: 800
+          }
+          
+
+          .frag {
+          background-color: #f0f0ff;
+          padding-top: 10;
+          margin-left: 20;
+          width: 800
+          }
+
+          .lizt {
+          width: 800
+          }
+
+          p {
+          text-indent: 10;
+          width: 820;
+          }
+
+          
+
+        </style>
+  </head>
+  <body>
+    <p class="docTitle">Vegas Pro Scripting FAQs</p>
+    <div class="docInfo">
+          Revision Date: Tuesday, August 14, 2007.
+          <br>
+          Copyright  &copy; 2010. Sony Creative Software Inc. All rights reserved.
+        </div>
+    <div class="tocSectionTitle">Section 1: General</div>
+    <div class="tocSectionItems">1.1: 
+    <a href="#1.1">What is Vegas Scripting?</a><br>1.2: 
+    <a href="#1.2">Which scripting languages does Vegas use?</a><br>1.3: 
+    <a href="#1.3">Do I need to be a programmer to write scripts?</a><br>1.4: 
+    <a href="#1.4">How do I create a script for Vegas?</a><br>1.5: 
+    <a href="#1.5">How do I write a simple "hello world" script?</a><br>1.6: 
+    <a href="#1.6">How do I use a script that has been posted on the web as a .txt file?</a><br>1.7: 
+    <a href="#1.7">Do scripts pose a security risk to my computer?</a><br>1.8: 
+    <a href="#1.8">How do I use my own .NET assembly from within a script?</a><br>1.9: 
+    <a href="#1.9">Is there a way to determine the path of currently running script?</a><br>1.10: 
+    <a href="#1.10">How do I add a script to the Scripting menu?</a><br>1.11: 
+    <a href="#1.11">How do I add a script to the toolbar?</a><br>1.12: 
+    <a href="#1.12">How do I assign a keyboard shortcut to a script?</a><br>1.13: 
+    <a href="#1.13">How do I make a custom icon appear for a script in the Scripting menu or toolbar?</a><br>1.14: 
+    <a href="#1.14">How do create and debug a script using a Visual Studio?</a><br>1.15: 
+    <a href="#1.15">How do I print debug messages from my script?</a><br>1.16: 
+    <a href="#1.16">How do I prevent debugger failures when my script accesses Cineform templates?</a><br>1.17: 
+    <a href="#1.17">My question is not answered in the FAQ, where can I get more help?</a><br>1.18: 
+    <a href="#1.18">Where can I get updates to the scripting SDK?</a><br></div>
+    <div class="tocSectionTitle">Section 2: Tracks and Events</div>
+    <div class="tocSectionItems">2.1: 
+    <a href="#2.1">How do I find the currently selected track or event?</a><br>2.2: 
+    <a href="#2.2">How do I set the fade type (curve) for an event?</a><br>2.3: 
+    <a href="#2.3">How do I make a one second dissolve at the beginning and end of a video event?</a><br>2.4: 
+    <a href="#2.4">How do I add media to the timeline?</a><br>2.5: 
+    <a href="#2.5">How do I add a text event to the timeline?</a><br>2.6: 
+    <a href="#2.6">How to I make a script modify the text string in a text event?</a><br>2.7: 
+    <a href="#2.7">How do I modify the pan/crop settings of a video event from a script?</a><br>2.8: 
+    <a href="#2.8">How do I set the opacity of a video track or event?</a><br></div>
+    <div class="tocSectionTitle">Section 3: Envelopes</div>
+    <div class="tocSectionItems">3.1: 
+    <a href="#3.1">How do I find a particular envelope for a given track or event?</a><br>3.2: 
+    <a href="#3.2">How do I add an envelope to a track or event?</a><br>3.3: 
+    <a href="#3.3">How do I add points to an envelope?</a><br></div>
+    <div class="tocSectionTitle">Section 4: Application Extensions</div>
+    <div class="tocSectionItems">4.1: 
+    <a href="#4.1">What are application extensions?</a><br>4.2: 
+    <a href="#4.2">How do I install an application extension?</a><br>4.3: 
+    <a href="#4.3">How do I write a simple "hello world" application extension?</a><br>4.4: 
+    <a href="#4.4">How do I create a window that can be docked in Vegas' user interface?</a><br></div>
+    <p class="HSECTION">Section 1: General</p>
+    <p class="HFAQ"><a name="1.1">1.1: 
+        What is Vegas Scripting?</a></p>
+
+<p>When we speak of scripting in Vegas, we're not referring to what
+may first come to mind for many of you, a written description of the
+scenes and dialog in a video production. Rather, we're referring to
+programmatic access to the internal data structures in Vegas projects
+that allows you to automate things that you might normally do via the
+GUI.  This may help you perform repetitive tasks, integrate with
+external applications, and implement customized features.</p>
+
+<p class="HFAQ"><a name="1.2">1.2: 
+        Which scripting languages does Vegas use?</a></p>
+
+<p>Vegas uses the .NET framework to provide its scripting interface.
+Vegas can execute C#, JScript, and Visual Basic script files directly.
+You do not need to compile them first.  Vegas can also execute scripts
+written in other .NET languages but those scripts must be compiled
+first.</p>
+
+<p>Although JScript, Visual Basic, and C# can be easy to learn, it
+certainly helps to have programming experience before you try to write
+a Vegas script.</p>
+
+<p><a href="msdn.microsoft.com/">Microsoft's developers' web site</a>
+has more information about the .NET Framework and its various
+programming languages.</p>
+
+<p class="HFAQ"><a name="1.3">1.3: 
+        Do I need to be a programmer to write scripts?</a></p>
+
+<p>For the most part, yes.  Although the .NET Framework provides
+several high level languages and numerous class libraries, it will be
+very difficult to write effective scripts without computer programming
+experience.  In fact, sometimes scripts can be more difficult to write
+than typical C or C++ applications because the development tools and
+debugging facilities may not be as advanced.  However, sometimes
+existing scripts can be tweaked a little to meet your specific needs.
+Don't be afraid to play around with scripts to alter and enhance their
+behavior.</p>
+
+<p class="HFAQ"><a name="1.4">1.4: 
+        How do I create a script for Vegas?</a></p>
+
+<p>Most scripts are just source code (ASCII text) files with a .cs,
+.js, or .vb extension so any text editor will do the trick.  Notepad
+may be the best choice among standard Windows applications.  Of
+course, you can use software development tools such as Microsoft
+Visual Studio or GNU Emacs to help create scripts.</p>
+
+<p>Compiled scripts can originate from the the same source code files
+as other scripts but they are converted to .NET assemblies (.dll or
+.exe files) by a compiler.  Typically you will use the .NET Framework
+SDK or Visual Studio to create compiled scripts.</p>
+
+<p class="HFAQ"><a name="1.5">1.5: 
+        How do I write a simple "hello world" script?</a></p>
+
+<p>Vegas uses several .NET script engine technologies to execute
+scripts.  By default, VSA compilers are used for JScript and Visual
+Basic.  Perhaps the simplest "Hello World" script is written in
+JScript:</p>
+
+<div class="fragLang">Language: JScript</div>
+    <div class="frag">
+      <pre>
+import System.Windows.Forms;
+import Sony.Vegas;
+
+MessageBox.Show("hello world");
+</pre>
+    </div>
+
+<p>When Vegas executes Visual Basic scripts using the VSA script
+engine, it begins with the Main subroutine in the MainModule
+module:</p>
+
+<div class="fragLang">Language: Visual Basic</div>
+    <div class="frag">
+      <pre>
+imports System.Windows.Forms
+imports Sony.Vegas
+
+Public Module MainModule
+Sub Main
+  MessageBox.Show("hello world")
+End Sub
+End Module
+</pre>
+    </div>
+
+<p>The VSA script engines were made obsolete with the introduction of
+.NET 2.0 and the introduction of new CodeDOM compilers.  Vegas uses a
+CodeDOM compiler for C# scripts and, optionally, also for JScript and
+Visual Basic.  Vegas requires a special entry point for CodeDOM
+scripts, a method named FromVegas in a class named EntryPoint:
+</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+using System.Windows.Forms;
+using Sony.Vegas;
+
+public class EntryPoint {
+    public void FromVegas(Vegas vegas) {
+        MessageBox.Show("hello world");
+    }
+}
+</pre>
+    </div>
+
+<p>At some point in the future, you can expect Vegas to stop
+supporting VSA scripts since the .NET Framework will eventually drop
+the VSA engines.  Most of the sample code in this document is written
+in C#.</p>
+
+<p class="HFAQ"><a name="1.6">1.6: 
+        How do I use a script that has been posted on the web as a .txt file?</a></p>
+
+
+<p>You can copy the entire contents of the script file from your
+browser window and paste it into a new document in your text editor.
+Using Notepad, you can "Save As" to specify the script file name.  You
+can name it anything you want but make sure to name the file with the
+.cs, .js, or .vb extension depending on the programming language used
+in the script.  Also make sure to choose "All Files" as the "Save as
+type", otherwise Notepad will append a .txt extension to the file.</p>
+
+<p>An nice alternative to using copy and paste is to right click in
+the browser window and choose "View Source" which will launch Notepad
+with the contents of the script.  Then just "Save As" as directed
+above.</p>
+
+<p class="HFAQ"><a name="1.7">1.7: 
+        Do scripts pose a security risk to my computer?</a></p>
+
+<p>Yes, scripts can be a security risk to your computer. A script run
+by Vegas has the power to do almost anything: delete files, read
+files, write files, execute programs, access the Internet, access
+files on your local network, etc.  You should always examine the
+contents of a script before running it and, if you don't understand
+what it is really doing, you should not run it unless it comes from a
+trusted source.  In general, you should take the same precautions for
+scripts that you would take for any executable program you
+download.</p>
+
+<p class="HFAQ"><a name="1.8">1.8: 
+        How do I use my own .NET assembly from within a script?</a></p>
+
+<p>By default, Vegas loads the following assemblies for every script
+that it runs:</p>
+
+<div class="lizt">
+      <ul>
+<li>mscorlib.dll</li>
+<li>System.dll</li>
+<li>System.Drawing.dll</li>
+<li>System.Windows.Forms.dll</li>
+<li>System.Xml.dll</li>
+</ul>
+    </div>
+
+<p>These assemblies cover most of the classes that scripts will
+use. However, occasionally a script will need to use classes that are
+not defined in the assemblies above including ones you've written
+yourself.  In these cases, scripts must have a configuration file that
+tells Vegas which extra assemblies to load.</p>
+
+<p>Each script can have a configuration file that specifies extra .NET
+assemblies used by the script.  The configuration file is an XML file
+with the same file name as the script except it has the '.config'
+extension appended.  For example, if your script is named
+"MyScript.cs", its configuration file should be named
+"MyScript.cs.config". The configuration file must be in the same
+directory as the script.</p>
+
+<p>The following provides an example of a configuration file for a
+script that references several extra assemblies:</p>
+
+<div class="fragLang">Language: XML</div>
+    <div class="frag">
+      <pre>
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;ScriptSettings&gt;
+  &lt;AssemblyReference&gt;System.Data.dll&lt;/AssemblyReference&gt;
+  &lt;AssemblyReference resolver="local"&gt;LocalUtilities.dll&lt;/AssemblyReference&gt;
+  &lt;AssemblyReference&gt;C:\MyAssemblies\VegasHelpers.dll&lt;/AssemblyReference&gt;
+&lt;/ScriptSettings&gt;
+</pre>
+    </div>
+
+<p>The root XML element of the configuration file is named
+ScriptSettings.  This element can contain any number of
+AssemblyReference elements. The inner text of each AssemblyReference
+element contains the file name of an assembly DLL.  For assemblies
+that are in the GAC (Global Assembly Cache... this includes most
+assemblies that ship with the .NET Framework), a full path is not
+required.  The resolver attribute, when set to "local", tells Vegas to
+look for the referenced assembly in the same directory as the script.
+Otherwise, you should specify the full path to the assembly.  The
+local resolver attribute allows you to distribute your script, its
+configuration file, and helper assemblies without hard coding any
+paths.  You just need to keep them in the same directory.</p>
+
+<p>One problem in the current release of Vegas is that VB scripts can
+not access assemblies in that are not either in the GAC or in the same
+directory as the Vegas executable. It is possible, however, to add
+your assembly to the GAC by using the gacutil program (See the .NET
+Framework documentation for more details). Alternatively, you can
+place a copy of your assembly in the Vegas install directory and use
+an AssemblyReference element similar to one that refers to an assembly
+in the GAC.</p>
+
+<p class="HFAQ"><a name="1.9">1.9: 
+        Is there a way to determine the path of currently running script?</a></p>
+
+<p>Yes, the global variable Sony.Vegas.Script.File contains the full
+path of the currently executing script. So if your script needs access
+to a helper file that resides in the same directory, your code might
+look like this: </p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+String scriptDirectory = Path.GetDirectoryName(Sony.Vegas.Script.File);
+String helperFile = Path.Combine(scriptDirectory, "HelperFile.ext");
+</pre>
+    </div>
+
+<p class="HFAQ"><a name="1.10">1.10: 
+        How do I add a script to the Scripting menu?</a></p>
+
+<p>You can add a script to the Scripting menu (under Vegas' Tools
+menu) by placing the script in one of the following directories:</p>
+
+<div class="frag">
+      <pre>
+C:\Documents and Settings\&lt;username&gt;\My Documents\Vegas Script Menu\ 
+C:\Documents and Settings\&lt;username&gt;\Local Settings\Application Data\Sony\Vegas Pro\8.0\Script Menu\ 
+C:\Documents and Settings\&lt;username&gt;\Application Data\Sony\Vegas Pro\8.0\Script Menu\ 
+C:\Documents and Settings\All Users\Application Data\Sony\Vegas Pro\8.0\Script Menu\ 
+C:\Documents and Settings\&lt;username&gt;\Local Settings\Application Data\Sony\Vegas Pro\Script Menu\ 
+C:\Documents and Settings\&lt;username&gt;\Application Data\Sony\Vegas Pro\Script Menu\ 
+C:\Documents and Settings\All Users\Application Data\Sony\Vegas Pro\Script Menu\ 
+</pre>
+    </div>
+
+
+<p>Different systems and users will have different paths to the
+various documents and settings directories but Vegas and installer
+programs should find them based on standard Windows APIs.  Typically,
+you will manage the 'Vegas Script Menu' in 'My Documents' yourself.
+Installers will use one of the other directories depending on the
+script's version compatibility, whether the script should appear for
+all users, etc.  After you place the script in one of these
+directories, it will appear in the Scripts menu the next time you
+launch Vegas or after you select the "Rescan Script Menu Folder" menu
+item.</p>
+
+<p class="HFAQ"><a name="1.11">1.11: 
+        How do I add a script to the toolbar?</a></p>
+
+<p>To add a script to the toolbar, first it must be located in one of
+the Scripting menu folders detailed above.  Once added to the
+Scripting menu, you can add a script to the toolbar using the
+'Customize Toolbar' dialog in Vegas' Options menu.  The available
+scripts are listed at the bottom of of the available toolbar button
+list.</p>
+
+<p class="HFAQ"><a name="1.12">1.12: 
+        How do I assign a keyboard shortcut to a script?</a></p>
+
+<p>To assign a keyboard shortcut to a script, first it must be
+located in one of the Scripting menu folders detailed above.  Once
+added to the Scripting menu, you can create a keyboard shortcut for
+the script using the 'Customize Keyboard' dialog in Vegas' Options
+menu.  The available scripts begin with the 'Script' keyword and are
+available under any context.</p>
+
+<p class="HFAQ"><a name="1.13">1.13: 
+        How do I make a custom icon appear for a script in the Scripting menu or toolbar?</a></p>
+
+<p>You can make a custom icon appear for a script you've added to the
+Scripting menu or toolbar by placing a PNG image in the same folder
+that contains the script.  The PNG file must have the same name as the
+script with the '.png' extension appended.  For example, if the script
+is named "My Script.cs", the toolbar image should be named "My
+Script.cs.png".  The image must be 16 X 16 pixels and must have 32-bit
+color depth with an alpha channel for transparency.</p>
+
+<p>Alternatively, you can use the script's configuration file to
+specify the script's icon.  In the configuration file, an IconFile
+element contains the name of the PNG file to use.  For example:</p>
+
+<div class="fragLang">Language: XML</div>
+    <div class="frag">
+      <pre>
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;ScriptSettings&gt;
+  &lt;IconFile&gt;C:\Icons\Icon1.png&lt;/IconFile&gt;
+&lt;/ScriptSettings&gt;
+</pre>
+    </div>
+
+<p>The inner text of the IconFile element is either a full path or a
+file name in the same directory as the script.</p>
+
+<p class="HFAQ"><a name="1.14">1.14: 
+        How do create and debug a script using a Visual Studio?</a></p>
+
+<p>You must create a compiled script to debug it using a Visual
+Studio.  To create a Visual Studio project for a Vegas script, you
+will typically follow these steps (for Visual Studio 2005... other
+versions will have similar steps):</p>
+
+<div class="lizt">
+      <ol>
+
+<li>In Visual Studio, select the 'File.New.Project...' menu item.</li>
+
+<li>In the New Project dialog, select the Class Library template under
+the Visual C# / Windows project type.</li>
+
+<li>Name your new project, choose its location, and click OK to
+dismiss the New Project dialog. For this example, we will name our
+project "SampleScript1"</li>
+
+<li>Select the 'Project.Add Reference...' menu item.</li>
+
+<li>Select the Browse tab and select Sony.Vegas.dll which is located
+in the Vegas install directory (typically in C:\Program
+Files\Sony\Vegas...).</li>
+
+<li>Add references for any other assemblies your script will use.  For
+example, the System.Windows.Forms assembly (located in the .NET tab of
+the Add Reference dialog) is frequently used.</li>
+
+<li>Edit your script.  Typically, you will change the name of the
+auto-generated class (Class1) to EntryPoint.</li>
+
+</ol>
+    </div>
+
+<p>At this point, you should get your script be ready to build
+(compile). For example, the following code provides a very simple
+example.</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows.Forms;
+using Sony.Vegas;
+
+namespace SampleScript1
+{
+    public class EntryPoint
+    {
+        public void FromVegas(Vegas vegas)
+        {
+            MessageBox.Show(vegas.Version);
+        }
+    }
+}
+</pre>
+    </div>
+
+<p>The following steps describe how to debug your script.</p>
+
+<div class="lizt">
+      <ol>
+
+<li>First build the solution in Visual Studio ('Build.Build Solution'
+menu item). If needed, fix any compiler errors and rebuild.</li>
+
+<li>Open the project properties using the 'Project.<i>ProjectName</i>
+Properties' menu item.</li>
+
+<li>In the Debug tab of the project properties, set the Start Action
+to 'Start external program'. Select vegas80.exe in the Vegas install
+directory.</li>
+
+<li>Save the project.</li>
+
+<li>Set your breakpoints in your script.</li>
+
+<li>Start debugging (select the 'Debug.Start Debugging' menu
+item). Vegas should start.</li>
+
+<li>In Vegas, select the 'Tools.Run Script...' menu item.  Select the
+assembly that was created when you built your Visual Studio project.
+It will be in the directory that Visual Studio created for your
+project.  It is <b>not</b> the .cs file you've been editing.  You need
+to select the .dll file that Visual Studio created.  It is located in
+the bin/Debug subdirectory and, for this example, is named
+SampleScript1.dll.</li>
+
+</ol>
+    </div>
+
+<p>When you run your precompiled script assembly in the Vegas
+application that was started by the Visual Studio debugger, your break
+points will be hit.</p>
+
+<p class="HFAQ"><a name="1.15">1.15: 
+        How do I print debug messages from my script?</a></p>
+
+<p>You can print debug messages using the
+System.Diagnostics.Debug.WriteLine method.  These messages are visible
+in your debugger's output window.  This works automatically for
+precompiled scripts built in Visual Studio (using your project's Dubug
+configuration).  However, for scripts that Vegas compiles, you must
+add some compiler options to your script config file to enable debug
+output.</p>
+
+<div class="fragLang">Language: XML</div>
+    <div class="frag">
+      <pre>
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;ScriptSettings&gt;
+  &lt;CompilerOptions&gt;-debug -D:DEBUG&lt;/CompilerOptions&gt;
+&lt;/ScriptSettings&gt;
+</pre>
+    </div>
+
+<p>The compiler options required for debug output depend on which
+language you are using to write your script.  The example provided
+will work for C# scripts.</p>
+
+<p class="HFAQ"><a name="1.16">1.16: 
+        How do I prevent debugger failures when my script accesses Cineform templates?</a></p>
+
+<p>This problem is caused by the Cineform codec dll.  You will need to
+quit Vegas, find the file named CFHD.DLL (located either in the Vegas
+install directory or the WINDOWS\system32 directory) and temporarily
+rename it to something like CFHD.DLL.BAK.</p>
+
+<p class="HFAQ"><a name="1.17">1.17: 
+        My question is not answered in the FAQ, where can I get more help?</a></p>
+
+<p>
+The <a href="http://www.sonycreativesoftware.com/forums/ShowTopics.asp?ForumID=21">Scripting
+Forum</a> is a good place to ask questions.  The forum is frequently
+monitored by Sony staff and friendly Vegas users who have considerable
+skills and experience.  Questions posted in the forum occasionally
+make their way into this FAQ.
+</p>
+
+<p class="HFAQ"><a name="1.18">1.18: 
+        Where can I get updates to the scripting SDK?</a></p>
+
+<p>
+The
+
+<a href="http://www.mediasoftwareapps.com/productinfo.asp?product=vegas&amp;place=scriptsdk">Vegas Pro Scripting SDK web page</a>
+
+will have a link to download the latest scripting SDK.  Updates to the
+SDK may be posted when we release new versions of Vegas.</p>
+
+<p class="HSECTION">Section 2: Tracks and Events</p>
+    <p class="HFAQ"><a name="2.1">2.1: 
+        How do I find the currently selected track or event?</a></p>
+
+<p>You can find the currently selected track or event by iterating
+through each track and event and examining the Selected property. The
+following functions provide an example of this:</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+Track FindSelectedTrack(Project project) {
+    foreach (Track track in project.Tracks) {
+        if (track.Selected) {
+            return track;
+        }
+    }
+    return null;
+}
+
+
+TrackEvent[] FindSelectedEvents(Project project) {
+    List&lt;TrackEvent&gt; selectedEvents = new List&lt;TrackEvent&gt;();
+    foreach (Track track in project.Tracks) {
+        foreach (TrackEvent trackEvent in track.Events) {
+            if (trackEvent.Selected) {
+                selectedEvents.Add(trackEvent);
+            }
+        }
+    }
+    return selectedEvents.ToArray();
+}
+</pre>
+    </div>
+
+<p>Note that multiple tracks and events selected at the same time. The
+first function returns only the first selected track while the second
+function returns all of the selected events.  Events can be selected
+in tracks that are not selected.</p>
+
+<p class="HFAQ"><a name="2.2">2.2: 
+        How do I set the fade type (curve) for an event?</a></p>
+
+<p>Every TrackEvent object has FadeIn and FadeOut properties which
+give you objects that control the event's ASR and (in the case of
+VideoEvents) transition effects.  The Fade object has a Curve property
+which can be set to one of the CurveType enumeration values.
+The following example gives an event fade in curve the fast type.</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+evnt.FadeIn.Curve = CurveType.Fast;
+</pre>
+    </div>
+
+<p>One tricky aspect of fades comes into play when two events overlap
+on the same track.  In this case, only the trailing event's FadeIn
+really matters and, to designate the type of fade curve for the
+leading event, you actually must set the trailing event's
+ReciprocalCurve property.  The following code snippet makes a slow
+curved fade transition between an event (trailingEvent) and any event
+on the same track that overlaps its leading edge:</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+trailingEvent.FadeIn.Curve = CurveType.Slow;
+trailingEvent.FadeIn.ReciprocalCurve = CurveType.Slow;
+</pre>
+    </div>
+
+<p class="HFAQ"><a name="2.3">2.3: 
+        How do I make a one second dissolve at the beginning and end of a video event?</a></p>
+
+<p>You can add a dissolve (or any transition) to an event using its
+FadeIn and FadeOut properties.  First you can set the length of the
+transition to the desired amount:</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+videoEvent.FadeIn.Length = Timecode.FromSeconds(1);
+</pre>
+    </div>
+
+<p>or</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+videoEvent.FadeOut.Length = Timecode.FromSeconds(1);
+</pre>
+    </div>
+
+<p>For video events, you can use a transition effect by creating a new
+instance of an Effect object using a transition PlugInNode then assign
+it to the Transition property of the appropriate Fade.  To create a
+new transition effect, you must first find the appropriate PlugInNode.
+To find a transition node by name, use the GetChildByName method of
+the Transitions root node.  The following function creates a new
+transition effect given its plug-in name:</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+Effect CreateTransitionEffect(Vegas vegas, String plugInName)  {
+    PlugInNode plugIn = vegas.Transitions.GetChildByName(plugInName);
+    if (null == plugIn)
+        throw new ApplicationException(String.Format("Failed to find plug-in: '{0}'", plugInName));
+    return new Effect(plugIn);
+}
+</pre>
+    </div>
+
+<p>Now you can set the event fade transitions and assign their preset:</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+Effect fadeInTx = CreateTransitionEffect("Sony Dissolve");
+videoEvent.FadeIn.Transition = fadeInTx;
+fadeInTx.Preset = "Additive Dissolve";
+Effect fadeOutTx = CreateTransitionEffect("Sony Slide");
+videoEvent.FadeOut.Transition = fadeOutTx;
+fadeOutTx.Preset = "Additive Dissolve";
+</pre>
+    </div>
+
+<p>You must pass the full name of the plug-in to the GetChildByName
+method.  The Plug-In Manager window shows the full name of each
+plug-in.  Most built-in plug-ins begin with "Sony".</p>
+
+<p class="HFAQ"><a name="2.4">2.4: 
+        How do I add media to the timeline?</a></p>
+
+<p>You can use the OpenFile method of the Vegas object to add a media
+file to the selected track at the current cursor position.  The
+OpenFile method works much like the 'File.Open' menu command and will
+insert tracks if necessary.  You can set the cursor position using the
+CursorPosition of the Vegas object's Transport property.  The
+following method demonstrates how to insert a media file at a specific
+position on a specific track using the OpenFile method.</p>
+
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+void InsertFileAt(Vegas vegas, String fileName, int trackIndex, Timecode cursorPosition) {
+    // first clear all track selections
+    foreach (Track track in vegas.Project.Tracks) {
+        track.Selected = false;
+    }
+    // select the desired track
+    vegas.Project.Tracks[trackIndex].Selected = true;
+    // set the cursor position
+    vegas.Transport.CursorPosition = cursorPosition;
+    vegas.OpenFile(fileName);
+}
+</pre>
+    </div>
+
+
+<p>Sometimes you need more control of how you add media to the
+project.  You can build events on the timeline by constructing media,
+tracks, events, and take objects individually:</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+VideoEvent AddVideoEvent(Vegas vegas, String mediaFile, Timecode start, Timecode length)
+{
+    Media media = new Media(mediaFile);
+    VideoTrack track = vegas.Project.AddVideoTrack();
+    VideoEvent videoEvent = track.AddVideoEvent(start, length);
+    Take take = videoEvent.AddTake(media.GetVideoStreamByIndex(0));
+    return videoEvent;
+}
+</pre>
+    </div>
+
+<p class="HFAQ"><a name="2.5">2.5: 
+        How do I add a text event to the timeline?</a></p>
+
+<p>You can add a text event to the timeline by constructing a Media
+object from the text generator effect and adding the video event and
+take to the track.</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+VideoEvent AddTextEvent(Vegas vegas, VideoTrack track, Timecode start, Timecode length)
+{
+    // find the text generator plug-in
+    PlugInNode plugIn = vegas.Generators.GetChildByName("Titler");
+    // create a media object with the generator plug-in
+    Media media = new Media(plugIn);
+    // set the generator preset
+    media.Generator.Preset = "centered";
+    // add the video event
+    VideoEvent videoEvent = track.AddVideoEvent(start, length);
+    // add the take using the generated video stream
+    Take take = videoEvent.AddTake(media.GetVideoStreamByIndex(0));
+    return videoEvent;
+}
+</pre>
+    </div>
+
+<p class="HFAQ"><a name="2.6">2.6: 
+        How to I make a script modify the text string in a text event?</a></p>
+
+<p>You can't.  Currently, one major shortcoming of the scripting API
+in Vegas is that specific parameters of video effects are not
+accessible to scripts.  The text string of text generators are one
+such parameter.  Scripts can only set presets values for a given key
+frame.</p>
+
+<p class="HFAQ"><a name="2.7">2.7: 
+        How do I modify the pan/crop settings of a video event from a script?</a></p>
+
+<p>Pan and crop settings can be manipulated using the VideoEvent's
+VideoMotion property.  The VideoMotion object has a Keyframes
+collection that contains VideoMotionKeyframe objects. Each keyframe
+has a Position in time relative to the start of the event.  Keyframes
+also have a Bounds polygon representing the four corners of the
+view-port onto the source media.  The best way to manipulate this
+bounds rectangle is to use the keyframe's MoveBy, ScaleBy, and
+RotateBy methods.  The keyframe's Center defines the point at the
+center of rotation.</p>
+
+<p>The following function moves a video event into view from a
+position off screen over a two second period.</p>
+
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+void PanFromLeft(Vegas vegas, VideoEvent videoEvent)
+{
+    // create a new keyframe at 2 seconds.
+    VideoMotionKeyframe key1 = new VideoMotionKeyframe(Timecode.FromSeconds(2));
+    // add the new keyframe
+    videoEvent.VideoMotion.Keyframes.Add(key1);
+    // get the first keyframe
+    VideoMotionKeyframe key0 = videoEvent.VideoMotion.Keyframes[0];
+    // get the width of the project
+    int videoWidth = vegas.Project.Video.Width;
+    // move the first keyframe just off screen
+    key0.MoveBy(new VideoMotionVertex(videoWidth, 0));
+}
+</pre>
+    </div>
+
+<p class="HFAQ"><a name="2.8">2.8: 
+        How do I set the opacity of a video track or event?</a></p>
+
+<p>You can to set the CompositeLevel property of a VideoTrack object
+to effect the entire track's opacity trim level.</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+videoTrack.CompositeLevel = 0.5f;
+</pre>
+    </div>
+
+<p>You can also add a composite level envelope to the video track
+(described below) if you need to the opacity to change over time.</p>
+
+<p>Individual event opacity can be set using the Gain property of the
+video event's FadeIn object:</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+videoEvent.FadeIn.Gain = 0.5;
+</pre>
+    </div>
+
+<p class="HSECTION">Section 3: Envelopes</p>
+    <p class="HFAQ"><a name="3.1">3.1: 
+        How do I find a particular envelope for a given track or event?</a></p>
+
+<p>To find an envelope by type, you can use the FindByType method of
+the appropriate Envelopes collection.</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+Envelope pan = audioTrack.Envelopes.FindByType(EnvelopeType.Pan);
+</pre>
+    </div>
+
+<p>All Track objects (AudioTrack and VideoTrack) have an Envelopes
+collection.  So do all BusTrack objects and VideoEvent objects.
+Envelopes collections also have a HasEnvelope method that allows you
+to quickly determine whether it contains an envelope of a particular
+type.</p>
+
+<p>If you want to find an automation envelope on an audio track, you
+will need to find it by name.  This means you need to iterate through
+the Envelopes collection and compare each envelope's name to the name
+you're looking for.</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+Envelope FindEnvelopeByName(Envelopes envelopes, String envelopeName) {
+    foreach (Envelope envelope in envelopes) {
+        if (envelope.Name == envelopeName) {
+            return envelope;
+        }
+    }
+    return null;
+}
+</pre>
+    </div>
+
+<p>Automation envelopes are named by both effect name and parameter
+name.  For example an automation envelope for the delay parameter of
+the chorus effect is named "Chorus: Delay".</p>
+
+<p class="HFAQ"><a name="3.2">3.2: 
+        How do I add an envelope to a track or event?</a></p>
+
+<p>The first step to add an envelope to a track or event is to create
+a new envelope of the desired type.  The Envelope class constructor
+can take any of the values in the EnvelopeType enumeration.  The next step is
+to add the new envelope to the appropriate Envelopes collection.</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+Envelope volumeEnvelope = new Envelope(EnvelopeType.Volume);
+audioTrack.Envelopes.Add(volumeEnvelope);
+</pre>
+    </div>
+
+<p>In this case, audioTrack can be any audio track that does not
+already have a volume envelope. Certain envelope types can only be
+added to a specific context.  For example, you cannot add a volume
+envelope to a video event.  It is currently not possible for a script
+to add an audio effect automation envelope to an audio track or bus
+track.</p>
+
+<p class="HFAQ"><a name="3.3">3.3: 
+        How do I add points to an envelope?</a></p>
+
+<p>You can add points to an envelope in much the same way you add
+envelopes to a track or event.  The first step is to create an
+EnvelopePoint object then just add it to the envelope's Points
+collection.</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+EnvelopePoint envelopePoint = new EnvelopePoint(Timecode.FromSeconds(1), 2.0, CurveType.Sharp);
+envelope.Points.Add(envelopePoint);
+</pre>
+    </div>
+
+<p>The code fragment above creates a new envelope point positioned one
+second after the start of the envelope.  The first argument to the
+EnvelopePoint constructor is its position.  The position represents
+the point's x-coordinate on the timeline.  The second argument is the
+envelope point's value at the given position.  This value must lie
+somewhere between the envelope's Min and Max properties.  Envelopes
+also have a Neutral property which defines the default or middle value
+for envelope points.  The third argument is one of the CurveType
+enumeration values which represents how the curve following the point
+should ascend or descend to reach the next point in the envelope.</p>
+
+<p>One rule to keep in mind when adding envelope points is that no two
+points can have the same position.  An exception is thrown if you
+attempt to add a point with the same position as another.  It is
+illegal to set a point's position to a negative value or, in the case
+of event envelopes, to a time beyond the end of the event.  It is also
+illegal to set a point's value outside the envelope's min/max
+range.</p>
+
+<p class="HSECTION">Section 4: Application Extensions</p>
+    <p class="HFAQ"><a name="4.1">4.1: 
+        What are application extensions?</a></p>
+
+<p>Application extensions are an advanced form of script that are
+loaded when Vegas starts and remain active as long as Vegas is
+running.  Application extensions can add commands to the Extensions
+menus under Vegas' Edit, View, and Tools menus.  As with scripts, you
+can add these commands to Vegas' toolbar and create keyboard
+shortcuts for them.</p>
+
+<p>Applicaton extensions can have greater levels of interactivity than
+scripts.  They can monitor the changes you make to your project and
+react accordingly.  They can create windows that you can dock along
+side Vegas' built-in windows.  They can also interactivly control
+playback.</p>
+
+<p>Unlike scripts, application extensions must be compiled and
+installed in specific locations before Vegas can use them.  As with
+scripts (or any program you run on your computer), <b>make sure you
+trust the source of any application extension you install on your
+system.</b></p>
+
+
+<p class="HFAQ"><a name="4.2">4.2: 
+        How do I install an application extension?</a></p>
+
+<p>Application extensions are contained in .NET assemblies which are
+program libraries for the .NET runtime that have a '.dll' file
+extension.  Application extensions are generally meant to be installed
+by an installer program but in some cases you may need to add or
+remove them manually.  When Vegas starts, it looks in the following
+locations for application extensions.</p>
+
+<div class="frag">
+      <pre>
+C:\Documents and Settings\&lt;username&gt;\My Documents\Vegas Application Extensions\  
+C:\Documents and Settings\&lt;username&gt;\Local Settings\Application Data\Sony\Vegas Pro\8.0\Application Extensions\ 
+C:\Documents and Settings\&lt;username&gt;\Application Data\Sony\Vegas Pro\8.0\Application Extensions\ 
+C:\Documents and Settings\All Users\Application Data\Sony\Vegas Pro\8.0\Application Extensions\ 
+C:\Documents and Settings\&lt;username&gt;\Local Settings\Application Data\Sony\Vegas Pro\Application Extensions\ 
+C:\Documents and Settings\&lt;username&gt;\Application Data\Sony\Vegas Pro\Application Extensions\ 
+C:\Documents and Settings\All Users\Application Data\Sony\Vegas Pro\Application Extensions\ 
+</pre>
+    </div>
+
+<p>Different systems and users will have different paths to the
+various directories but Vegas and installer programs should find them
+based on standard Windows APIs.  Typically you will manage the 'Vegas
+Application Extensions' directory in your 'My Documents' directory
+yourself and intaller programs will add extensions to the 'Application
+Data' directories.</p>
+
+<p class="HFAQ"><a name="4.3">4.3: 
+        How do I write a simple "hello world" application extension?</a></p>
+
+<p>An application extension starts with a class that implements the
+ICustomCommandModule interface.  This interface has two methods,
+InitializeModule and GetCustomCommands.  Vegas calls InitializeModule
+after it creates the module object.  After initialization, Vegas calls
+the GetCustomCommands method.  You should return a collection of the
+CustomCommand objects your module implements.  This is typically an
+array of CustomCommand objects but any collection that implements the
+ICollection interface will work.  Each CustomCommand object has an
+Invoked event which occurs when the user selects the command from the
+menu, toolbar, or keyboard shortcut.</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+using System;
+using System.Collections;
+using System.Windows.Forms;
+using Sony.Vegas;
+
+public class SampleModule : ICustomCommandModule {
+
+    public void InitializeModule(Vegas vegas) { }
+
+    public ICollection GetCustomCommands() {
+        CustomCommand cmd = new CustomCommand(CommandCategory.Tools, "SampleToolCommand");
+        cmd.DisplayName = "Hello World";
+        cmd.Invoked += this.HandleInvoked;
+        return new CustomCommand[] { cmd };
+    }
+
+    void HandleInvoked(Object sender, EventArgs args) {
+        MessageBox.Show("hello world");
+    }
+}
+</pre>
+    </div>
+
+<p>Most command modules hold a reference to the Vegas object passed to
+the InitializeModule method and use it to access Vegas' project data
+when the user invokes the commands.  The CommandCategory value passed
+to the CustomCommand constructor determines which Extensions menu
+contains the command.  The second argument to the CustomCommand
+constructor is its unique name which Vegas uses to identify the
+command.  You should never change this name because Vegas uses it to
+restore the user's toolbar and keyboard binding preferences.  This
+name must be unique so try to pick a name that other application
+extension authors probably won't use.  If Vegas loads a command with
+the same name before yours, your command will be ignored.</p>
+
+<p>The DispalyName property of your CustomCommand appears in the
+Extension menu item for your command, in the tool-tip text for the
+toolbar button assigned to your command, and various other user
+interfaces.</p>
+
+<p class="HFAQ"><a name="4.4">4.4: 
+        How do I create a window that can be docked in Vegas' user interface?</a></p>
+
+<p>The DockableControl class is special type of UserControl that can
+be docked in Vegas' user interface.  Typically, you will associate a
+DockableControl with a CustomCommand that appears in Vegas'
+View.Extensions menu.  When this command is invoked, your module will
+create a DockableControl and pass it to the Vegas object's
+LoadDockView method.</p>
+
+<div class="fragLang">Language: C#</div>
+    <div class="frag">
+      <pre>
+using System;
+using System.Drawing;
+using System.Collections;
+using System.Windows.Forms;
+using Sony.Vegas;
+
+public class SampleModule : ICustomCommandModule {
+    protected Vegas myVegas = null;
+    
+    public void InitializeModule(Vegas vegas)
+    {
+        myVegas = vegas;
+    }
+
+    CustomCommand myViewCommand = new CustomCommand(CommandCategory.View, "mySampleViewCommand");
+
+    public ICollection GetCustomCommands() {
+        myViewCommand.DisplayName = "Hello World View";
+        myViewCommand.Invoked += this.HandleInvoked;
+        myViewCommand.MenuPopup += this.HandleMenuPopup;
+        return new CustomCommand[] { myViewCommand };
+    }
+
+    void HandleInvoked(Object sender, EventArgs args) {
+        if (!myVegas.ActivateDockView("HellowWorldView"))
+        {
+            DockableControl dockView = new DockableControl("HellowWorldView");
+            Label label = new Label();
+            label.Dock = DockStyle.Fill;
+            label.Text = "hello world";
+            label.TextAlign = ContentAlignment.MiddleCenter;
+            dockView.Controls.Add(label);
+            myVegas.LoadDockView(dockView);
+        }
+    }
+
+    void HandleMenuPopup(Object sender, EventArgs args)
+    {
+        myViewCommand.Checked = myVegas.FindDockView("HellowWorldView");
+    }
+    
+}
+</pre>
+    </div>
+
+<p>The DockableControl is constructed with a unique name string which
+can be used to activate the window using the ActivateDockView method.
+If this method returns true, the control has been loaded and Vegas
+will bring it to the front of other docked windows.  If
+ActivateDockView returns false, you should construct a new
+DockableControl and pass it to LoadDockView.</p>
+
+<p>The MenuPopup event of your CustomCommand occurs when Vegas shows
+the Extensions menu that contains the command.  This is your
+opportunity to check if your DockableControl is loaded.  You can set
+the Checked property of your command to indicate whether Vegas should
+draw a box around your command's icon in the Extensions menu.</p>
+
+</body>
+</html>

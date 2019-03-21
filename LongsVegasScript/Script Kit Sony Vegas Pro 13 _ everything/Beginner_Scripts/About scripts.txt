@@ -1,0 +1,57 @@
+Vegas 4 public beta demo scripts, 1/16/03
+--------------------
+/*
+1. simple Pops up a message box containing application info
+2. BatchRender is a customizeable script for batch rendering
+3. AddEffectToAllMedia demonstrates how you can add an effect to all media files in the project.
+4. RemoveEffectFromAllMedia reverses the action of AddEffectToAllMedia.js
+5. PlaylistToProject will create a CD burning project from a music play list file in ASX format.
+6. RenderImageSequence renders a still image sequence from the current Vegas project.
+*/
+Scripts can be opened and edited with your favorite text editor. 
+
+We do not have complete documentation available at this time, but those familiar with 
+JScript or VBScript can contact us at vegas4beta@sonicfoundry.com for more info.
+
+Additional scripts and a scripting support forum will be available in the near future on 
+sonicfoundry.com.
+
+
+---------------------
+
+simple.js 
+Pops up a message box containing application info
+
+simple.vb 
+VBScript version of simple.js
+
+----------------------
+
+BatchRender.js 
+customizeable script for batch rendering
+
+----------------------
+
+AddEffectToAllMedia.js
+
+This script demonstrates how you can add an effect to all media files in the project. 
+In this example the timecode plug-in will be applied to all media files in the media pool.
+
+
+RemoveEffectFromAllMedia.js
+This  script reverses the action of AddEffectToAllMedia.js 
+
+----------------------
+
+PlaylistToProject.js
+
+This script will create a CD burning project from a music play list file in ASX format.  
+You can create ASX format play lists with Windows Media Player.  
+This script can be easily modified to support any play list format that based on XML.
+
+----------------------
+
+RenderImageSequence.js
+
+This script renders a still image sequence from the current Vegas project. It first presents a dialog that allows you to specify the output directory, base file name, file format (PNG or JPEG), start
+time, stop time, and step time.  

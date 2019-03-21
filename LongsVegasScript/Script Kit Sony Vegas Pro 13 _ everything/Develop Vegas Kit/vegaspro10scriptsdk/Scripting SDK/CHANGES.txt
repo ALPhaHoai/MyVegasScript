@@ -1,0 +1,1426 @@
+This document describes changes made to the scripting API with each
+release of Vegas Pro.
+
+                      VEGAS PRO 10.0
+
+* Channel mappings for multichannel renders may now be manipulated
+  using new properties on AudioBusTrack objects:
+
+  * MonoRenderEnabled - include mono downmix in render.
+  * StereoRenderEnabled - include mono mix in render.
+  * SurroundRenderEnabled - include 5.1 surround mix in render (master bus only).
+  * MonoRenderOrder - mono downmix render order.
+  * StereoRenderOrder - stereo mix render order.
+  * SurroundRenderOrder - 5.1 surround mix render order (master bus only).
+
+  Bus mixes with lower render order numbers will be included before
+  ones with higher numbers.  If more than one mix has the same render
+  order, their bus display order determines which is included first.
+  A NotSupportedException is thrown when you attempt to access
+  surround mix properties on anything but the master audio bus and
+  when you attempt to set any of these properties on an
+  AudioFXBusTrack.
+
+* Added classes and methods to manipulate track groups.  The Project
+  object has a TrackGroups collection which contains the set of
+  TrackGroup objects.  The Project object has two new methods used to
+  modify track groups, GroupSelectedTracks and UngroupSelectedTracks,
+  which behave the same as the corresponding context menu items in the
+  GUI.  Each TrackGroup is a collection of Track objects and has a
+  Name, Mute, and Solo properties.
+
+* The Groups property of the Project object is now depricated and has
+  been replaced by the TrackEventGroups property.
+
+* Added SnapOffset property (get & set) to TrackEvent objects.
+
+* Fixed bug where accessing a PlugInNode via script would destroy any
+  custom FX filter packages you may have created.
+
+* The ability to execute scripts contained in XML messages sent to
+  Vegas has been removed.  You can still post WM_COPYDATA messages
+  with a -SCRIPT command line to execute scripts in a running instance
+  of Vegas.
+
+* Added SetFocusToMainTrackView to DockableControl class so that app
+  extensions can send input focus to Vegas' timeline.
+
+* Added VideoDataRate property to RenderTemplate which allows you to
+  get the average data rate of the encoded video in bytes per second.
+
+                      VEGAS PRO 9.0d
+
+* Fixed problems with changing project video properties (such as
+  FrameRate, Width, Height, and PixelAspectRatio) where, after making
+  the change, the video preview could display the wrong size or the
+  wrong frame and stepping the cursor on the timeline could move the
+  playback head by the wrong amount.  This change also effects how
+  Timecodes are converted to and from strings if the current ruler
+  format is a a type that depends on the project frame rate.
+  Previously the old frame rate could be used to convert strings even
+  after the script changed the project frame rate.  However, when the
+  ruler format implies a frame rate, the standard frame rate for the
+  ruler format is used in string conversion regardless of the project
+  frame rate.  Formats that imply a frame rate include Samples, Time,
+  Seconds, and all of the SMPTE formats.
+
+* Added Media.MediaCommandMarkerList collection (of MediaCommandMarker
+  type) to enable access to media command markers used for closed
+  captioning.
+
+                      VEGAS PRO 9.0a
+
+* Added SaveProjectPathLink property to RenderArgs object which, when
+  set to true, saves a path link to the source project with the
+  rendered media file.  The default value is false and the value is
+  ignored when rendering a project that has never been saved.
+
+* Fixed problem with getting the PlayCursorPosition property of the
+  TransportControl object during playback.  It now should return the
+  correct value even after the timeline is scrolled.
+
+* The new Title property of Media objects allows you to get their
+  title field.  Media with no title will have a value of null for
+  their Title property.
+
+* Label class included now in the Skins library.
+
+  Sony.MediaSoftware.Skins.Label
+
+
+                      VEGAS PRO 9.0
+
+* The new assembly, Sony.MediaSoftware.Skins, contains controls which
+  adopt Vegas' color scheme according to the user's preference.  These
+  controls are subclasses of System.Windows.Forms classes.
+
+  Sony.MediaSoftware.Skins.Button
+  Sony.MediaSoftware.Skins.ComboBox
+  Sony.MediaSoftware.Skins.ContextMenu
+  Sony.MediaSoftware.Skins.ListView
+  Sony.MediaSoftware.Skins.NumericUpDown
+  Sony.MediaSoftware.Skins.Panel
+  Sony.MediaSoftware.Skins.TabControl
+  Sony.MediaSoftware.Skins.TextBox
+  Sony.MediaSoftware.Skins.UpDownBase
+
+  You may use these controls if you are writing a dock view and you
+  want to maintain a consistent look in the application.
+
+* The new AudioChannelCount property of RenderTemplate objects allow
+  you to get the number of audio channels produced by a render
+  template.
+
+* Some of the RenderTemplate objects in each RenderTemplates list may
+  not be valid.  This most often occurs for "Project Settings" or
+  "Default" templates when the render format in incompatible with the
+  project.  For example, the "Project Settings" template of the AC3
+  renderer is invalid when the project has no audio tracks.  Call the
+  IsValid() method of the RenderTemplate object to check whether it is
+  valid.  When the RenderTemplate is not valid, its properties such as
+  Name, Description, and TemplateGuid are also invalid.  You can call
+  the Refresh method of the RenderTemplates list to regenerate the
+  list of templates including the "Project Settings" template.  This
+  may be required if the project has changed since the template list
+  was last accessed.
+
+* The Description property of RenderTemplate objects returns the
+  auto-generated description text while the new Notes property returns
+  the user-supplied description text.
+
+* The OnCompleteWork method and CompleteWork event of ProgressWorker
+  objects is called even when the worker (or previous serialized
+  worker) is canceled.  In this case, the Cancel property of the
+  ProgressEventArgs supplied to the CompleteWork event will be set to
+  true.  Also, the Canceled property of the ProgressWorker object will
+  be true.  The OnDoWork method and DoWork event is still not called
+  on queued workers that follow a canceled worker.
+
+* New AppCultureInfo property of the Vegas object returns the
+  CultureInfo object that represents the culture used by the
+  application.
+
+* Fixed some problems with status dialogs that are associated with
+  ProgressWorker ojects.
+
+
+                      VEGAS PRO 8.0c
+
+* New ArmRecord property of AudioTrack objects tells whether the track
+  is armed for recording.
+
+* New AddImageSequence method of the MediaPool class allows you to
+  create a new image sequence media object by specifying the path of
+  first image, the number of images, and the frame rate.
+
+* Vegas no longer treats warnings as errors when compiling scripts.
+  Warnings can occur when the user's environment contains invalid
+  directories in the LIB path.  Script authors can override this
+  behavior by adding the following element to their script
+  configuration file:
+  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  
+* The process of getting RenderTemplate properties has changed.  One
+  consequence is that you may need to call the new Refresh method of
+  the RenderTemplates collection to update the list if it has changed.
+
+* Visual Basic scripts that use Microsoft's (depricated) VSA compiler
+  are not supported in the 64-bit version of Vegas.
+
+
+
+                      VEGAS PRO 8.0b
+
+* New Loaded event (and OnLoaded hook method) of DockableControl class
+  is invoked after the control is loaded.
+
+* Unhandled exceptions in the Vegas app domain (where extensions run)
+  are now sent to the Windows Application event log.  A dialog is
+  shown with the details of the exception and the user is given the
+  option to quit Vegas after trying to save the current project.  The
+  user can also choose not to save the project or just ignore the
+  error and continue working.  Unhandled exceptions in the script
+  domain, which may occur when a script throws an exception from a
+  modal dialog, are sent to the Application log as well.  When these
+  exceptions occur, the script will exit and the standard application
+  exception dialog will appear with the exception details.
+
+* Implemented equality operators and methods for MediaStream classes.
+
+* Fixed bugs that prevented Takes from being created with certain
+  media streams (offline media streams, multi-channel streams,
+  multi-stream media).
+
+* New SaveProjectDialog method of the Vegas class allows scripts to
+  show the Save Project dialog with a default value for the file path.
+
+
+                      VEGAS PRO 8.0a
+
+* Fixed problem with docking more than one managed dock window in the
+  same parent frame.  Previously, Vegas would show the first managed
+  dock window window in the tab order even when another window was
+  selected.  Managed dock windows now are assigned unique window ids
+  when they are created.  There is a limit of 100 managed dock windows
+  visible at the same time.
+
+* Added new event, Vegas::TrackEventTimeChanged, which occurs when
+  TrackEvents change position or size.
+
+* Fixed problem with changing the Selected property of TrackEvent
+  objects.  Now the main track view's selection list is updated with
+  changes made by a script or extension.
+
+* Fixed problem with the InsertTime method of the Project class which
+  caused it to ignore prior changes to the set of selected events.
+  Also added a new version of the InsertTime method with a boolean
+  argument, ignoreSelection, which allows you to ignore the current
+  event selections and insert time into all trackso.
+
+* Classes that implement the ICustomCommandModule interface can now be
+  declared in any namespace.  Previously, due to a bug, Vegas would
+  only create them if they were declared in the root level (global)
+  namespace.
+
+
+
+
+
+                      VEGAS PRO 8.0
+
+* Vegas can now be extended by a new kind of compiled script,
+  called a "custom command", that is loaded when the application
+  starts and stays 'alive' as long as the application is running.
+  Custom commands have the ability to respond to changes in project
+  data, control playback, and present a non-modal user interface.
+  Custom commands are represented by instances of the CustomCommand
+  class which provides basic information about the command such as its
+  category, name, and icon.  You can subscribe to events or override
+  methods on CustomCommand objects to provide their functionality.
+
+ * Custom commands are categorized.  There are currently three
+   categories (Edit, View, and Tools) specified by the CommandCategory
+   enumeration.  Beyond the root-level categories, custom commands are
+   organized hierarchically so you can group a set of related commands
+   under a parent command.  Each command must be constructed with a
+   name string that is unique among its peers in the command
+   hierarchy.  The command name may be different from the command's
+   DisplayName property which appears in the user interface.  The
+   command name must never change so Vegas can save user preferences
+   related to the command (such as toolbar customizations and keyboard
+   bindings).
+
+ * Custom commands appear in special Extensions menus under Vegas'
+   Edit, View, and Tools menu.  The Invoked event of a CustomCommand
+   object is fired when the user selects its menu item.  You can
+   prevent Vegas from showing a CustomCommand in a menu by setting its
+   CanAddToMenu property to false.  Sub-menus under the 'Extensions'
+   menus will reflect the command hierarchy.
+
+ * Users can add custom commands to Vegas' main toolbar using Vegas'
+   'Customize Toolbar' dialog.  The Invoked event of a CustomCommand
+   object is fired when the user selects its toolbar button.  You can
+   prevent Vegas from showing a CustomCommand by setting its
+   CanAddToToolbar property to false.
+
+ * Users can assign keyboard shortcuts to custom commands using Vegas'
+   'Customize Keyboard' dialog. The Invoked event of a CustomCommand
+   object is fired when the user types its shortcut keys.  You can
+   prevent Vegas from allowing keyboard shortcuts for a CustomCommand
+   by setting its CanAddToKeybindings property to false.
+
+ * Whenever a custom command modifies project data, it must tell Vegas
+   when the operation begins and ends so Vegas can track the changes
+   in its undo stack.  The command will use a UndoBlock object to
+   symbolize its modifications.  When the command creates an UndoBlock
+   object, it will specify the string that appears in Vegas' Undo/Redo
+   menu items and command history.  If needed, the command can cancel
+   its modifications using the Cancel property of the UndoBlock
+   object.  The command signifies the end of its operation when it
+   calls the Dispose method of the UndoBlock object.  Implementing the
+   IDisposable interface, UndoBlock objects are ideal for C# using
+   statements which ensure the Dispose method will be called.  The
+   following sample code illustrates the typical use of UndoBlock
+   objects:
+
+    [code]
+    void HandleCommandInvoked(Object sender, EventArgs args)
+    {
+        using (UndoBlock undo = new UndoBlock("Sample Commands"))
+        {
+            // make your changes to the project here. in this case,
+            // the method call below will return false if no changes
+            // are made or the changes should be reverted.
+            undo.Cancel = !MakeProjectChanges();
+        }
+    }
+    [/code]
+
+ * Custom commands can subscribe to several new events on
+   the Vegas object:
+    AppInitialized - occurs when the Vegas application completes initialization.
+    AppActivated - occurs when the Vegas application becomes active.
+    AppDeavtivate - occurs when the Vegas application deactivates.
+    ProjectOpening - occurs when Vegas begins to open a new project file.
+    ProjectOpened - occurs when a project is opened.
+    ProjectClosed - occurs when a project is closed.
+    ProjectSaved - occurs when a project is saved.
+    TrackCountChanged - occurs when the number of tracks changes.
+    TrackStateChanged - occurs when the state of one or more tracks changes.
+    TrackEventCountChanged - occurs when the number of track events changes.
+    TrackEventStateChanged - occurs when the state of one or more track events changes.
+    MarkersChanged - occurs markers or regions are added, removed, repositioned or otherwise changed.
+    MediaPoolChanged - occurs when media is added, removed, or changed in the project media pool.
+    RulerFormatChanged - occurs when the project ruler format is changed.
+    PlaybackStarted - occurs when playback starts.
+    PlaybackStopped - occurs when playback stops.
+
+ * Custom commands must interact with Vegas and its project data on
+   its main application thread.  They may execute code on other
+   threads but those threads can not interact directly with Vegas.
+   Custom commands run in a different application domain than scripts
+   so it is not possible for scripts to directly interact with custom
+   commands.
+
+ * Custom commands in the View category can create user interfaces
+   that are similar to built-in components like Edit Details, Project
+   Media, Media Manager, Capture, etc.  When invoked, View commands
+   will activate a DockableControl object.  The DockableControl class
+   (described in more detail below) is a special UserControl that can
+   be docked in Vegas' user interface along with like built-in
+   components.
+
+   When invoked, custom commands in the View category will typically
+   first try to activate an existing instance of their DockableControl
+   using the ActivateDockView method of the Vegas object.  If this
+   method returns false, the control does not already exist and the
+   command will create a new one.  The following code provides an
+   example of this behavior:
+
+    [code]
+    private void HandleSampleDockViewCmdInvoked(Object sender, EventArgs args)
+    {
+        if (!myVegas.ActivateDockView("SampleDockView"))
+        {
+            SampleDockView dockView = new SampleDockView();
+            dockView.AutoLoadCommand = mySampleDockViewCommand;
+            myVegas.LoadDockView(dockView);
+        }
+    }
+    [/code]
+
+   Similar to a custom command, each dockable control should be
+   created with a unique name which is used to identify it.  If a
+   DockableControl is visible when Vegas exits, it can be
+   automatically reloaded when Vegas runs the next time if its
+   AutoLoadCommand property is set to the CustomCommand that creates
+   it.
+
+   Before the items in a Custom sub-menu appears, Vegas invokes the
+   MenuPopup event of each custom command in the sub-menu.  This is an
+   opportunity to set the Checked property of the CustomCommand object
+   to indicate whether the menu item should be drawn in its checked
+   state.  A View command will typically use Vegas' FindDockView
+   method to determine whether its DockableControl exists:
+
+    [code]
+    private void HandleSampleDockViewCmdMenuPopup(Object sender, EventArgs args)
+    {
+        CustomCommand cmd = (CustomCommand) sender;
+        cmd.Checked = myVegas.FindDockView("SampleDockView");
+    }
+    [/code]
+
+   You can also set the MenuItemName property of a CustomCommand
+   objects in MenuPopup event handlers to provide context-sensitive
+   information in the menu item.
+
+
+ * Custom commands are contained in compiled .net assemblies that
+   contain a public class that implements the ICustomCommandModule
+   interface.  This interface provides an initialization routine with
+   one argument, the Vegas object:
+
+     void InitializeModule(Vegas vegas);
+
+   In this method, modules can initialize internal resources but
+   should not attempt to modify project data or create user interfaces
+   because it is called before Vegas has loaded a project or created
+   its windows.  Modules may also add ResolveEventHandler delegates to
+   the current application domain to help locate any assemblies
+   referenced by the module.  Keep in mind that objects that implement
+   ICustomCommandModule can not require unresolved assemblies when
+   they are created.  The scope of this topic goes beyond this
+   document but these issues can usually be resolved by delaying
+   activation of certain objects or registering assemblies in the GAC.
+   After initialization, Vegas will call a second method that returns
+   the collection of CustomCommands hosted by the module:
+
+     ICollection GetCustomCommands();
+
+   The module will typically return an array of CustomCommand objects
+   but any type of collection containing CustomCommands is OK.  The
+   order of the commands in the collection may not be preserved in
+   Vegas' user interface (such as Extensions menus) which are
+   typically alphabetized.  It is OK to return an empty collection or
+   null from GetCustomCommands.  This may be the case for a 'passive'
+   command module that only subscribes to events on the Vegas object.
+
+
+ * On start-up, Vegas will scan a series of directories for assemblies
+   that contain classes that implement the ICustomCommandModule
+   interface.  The directories are scanned in the following order:
+
+[code]
+C:\Documents and Settings\<username>\My Documents\Vegas Application Extensions\  
+C:\Documents and Settings\<username>\Local Settings\Application Data\Sony\Vegas Pro\8.0\Application Extensions\ 
+C:\Documents and Settings\<username>\Application Data\Sony\Vegas Pro\8.0\Application Extensions\ 
+C:\Documents and Settings\All Users\Application Data\Sony\Vegas Pro\8.0\Application Extensions\ 
+C:\Documents and Settings\<username>\Local Settings\Application Data\Sony\Vegas Pro\Application Extensions\ 
+C:\Documents and Settings\<username>\Application Data\Sony\Vegas Pro\Application Extensions\ 
+C:\Documents and Settings\All Users\Application Data\Sony\Vegas Pro\Application Extensions\ 
+[/code]
+
+   During the scan, Vegas will discard any CustomCommand objects that
+   don't have a unique FullName property (which is constructed from
+   the command's name and the names of its parent commands).  
+
+
+* The new CMDMODULE command-line argument allows you to specify extra
+  assemblies and/or directories to scan for custom command modules.
+  For example, the following command line will load the specified
+  assebly along witht those in the normal scan path.
+
+[code]
+vegas80.exe -CMDMODULE:"C:\Projects\MyVegasExtension\Debug\MyVegasExtension.dll"
+[/code]
+
+
+* The new DockableControl class allows custom commands to create
+  non-modal user interfaces that can be docked like the other
+  components in Vegas.  DockableControl is a subclass of UserControl
+  in the System.Windows.Forms namespace.  One restriction of
+  DockableControls is they are not contained in a Form object.
+  Instead, they are contained by an unmanaged window that may be
+  floating by istelf or parented by a 'frame' window.  Some behaviors
+  of typical Controls depend on the Form that contains them.  In
+  Vegas, some of these behaviors are supported but others are not.
+
+ * The DisplayName property of DockableControl objects appears in the
+   control's window caption and dock tab.  This can differ from the
+   control's immutable InstanceName property which is assigned when
+   the control is constructed.
+
+ * DockableControls must be created by CustomCommands or their modules
+   which run in the main 'Vegas' application domain.  Scripts (which
+   run in a separate application domain) can not create
+   DockableControls.
+
+ * DockableControls have a protected read-only myVegas property which
+   refers to the Vegas application object that is initialized upon
+   construction.  From this you can manipulate project data, etc.  The
+   same conditions apply for dockable controls that apply for custom
+   commands.  They must wrap modifications in UndoBlocks and must
+   access project data on Vegas' main window thread.
+
+ * The Vegas object has a LoadDockView which registers and shows a
+   dockable control.  Your custom command must call this method with
+   any dockable control it creates.  This method and related methods
+   on the Vegas object refer to the IDockView interface which is
+   implemented by DockableControls.
+
+ * The ActivateDockView method of the Vegas object will bring the
+   specified dockable control to the front.  This works whether the
+   control is docked or floating and will bring input focus to the
+   control.
+
+ * The FindDockView methods of the Vegas object indicate whether the
+   specified dockable control is loaded.  These can be used by custom
+   commands to prevent creating a control more than once.
+
+ * When the user tries to close a dockable control's window, Vegas
+   will fire the control's Closing event with a CancelEventArgs
+   argument.  If you need to prevent the window from being closed, you
+   can set the argument's Cancel property to true.
+
+ * When the user closes the main Vegas application window, Vegas will
+   not fire the Closing event.  Instead, it will fire the
+   AppWindowClosing event.  Again, you can prevent the window from
+   closing by setting the Cancel property to true.  Often you only
+   need to temporarily delay the application from exiting while you
+   clean up asynchronous operations.  In this case, you can cancel but
+   hold a reference to the CancelEventArgs that was passed to your
+   AppWindowClosing event handler.  When you are done with your
+   clean-up tasks, call the ResumeCloseAppWindow method, passing in
+   the CancelEventArgs, and Vegas will resume its shut-down procedure.
+
+ * It can be problematic to post new window messages after the
+   AppWindowClosing event is processed.  For example, if you have any
+   window timers running, cancel them when you receive that event.
+
+ * The ParentWindowChanged event occurs when the dockable control is
+   docked or undocked.  The handle of the new parent window is
+   provided by the ParentWindow property via an IWin32Window
+   interface.  The ParentWindow property may be null during
+   initialization and destruction of the DockableControl.
+
+ * Occasionally a dockable control needs to show a modal dialog.  By
+   default, Vegas returns focus to the main track view after a modal
+   dialog is dismissed.  The SaveFocus method of a DockableControl
+   object, when called before the dialog is shown, allows Vegas to
+   restore focus to the dockable control (or the specified child
+   control) after the dialog is dismissed.
+
+ * The CaptionDoubleClick event of the DockableControl class occurs
+   when the user double-clicks the caption of a floating dock window.
+   Often the desired behavior is to resize the window to a size that
+   best fits its contents.  The CaptionDoubleClickEventArgs allows you
+   to specify how the window should be resized.  If the event is not
+   handled or the argument is left alone, Vegas will not resize the
+   window.  To use Vegas' default algorithm for resizing dockable
+   control windows, set the GenericSizeChange property of the event
+   argument to true.  This algorithm chooses a standard window size
+   but does not account for the window's contents.  Alternatively, you
+   can specify the new size of the window as shown in following sample
+   code:
+
+    [code]
+    protected override void OnCaptionDoubleClick(CaptionDoubleClickEventArgs args)
+    {
+         args.ControlSize = ComputeIdealControlSize();
+    }
+    [/code]
+
+ * The MainWindow property of the Vegas object is a IWin32Window
+   interface which provides the HWND of Vegas' main window.  This
+   value will be null before the Vegas the window is initialized.
+
+
+* The new ProgressWorker class allows custom commands to perform
+  asynchronous operations using Vegas' task manager.  While the worker
+  performs its operations, Vegas will display a progress bar in its
+  status bar.  You can enqueue a ProgressWorker using the
+  QueueProgressWorker method of the Vegas object.  Each ProgressWorker
+  has two main events.  First, the DoWork event occurs on the task
+  manager's worker thread.  Then, the CompleteWork event occurs on the
+  main window thread.
+
+ * The most important restriction of using ProgressWorker objects is
+   you cannot directly manipulate the Vegas object or project data on
+   the worker thread.  Depending on the task, this can be a serious
+   limitation.  Work-arounds for this limitation are beyond the scope
+   of this document but, generally speaking, ProgressWorkers are not
+   the solution for tasks that manipulate a great deal of project
+   data.  Project data can be manipulated by the CompleteWork event
+   but this work should be completed quickly or the application will
+   appear unresponsive.
+
+ * The ProgressWorker has ProgressMin and ProgressMax properties which
+   represent the range of work to be completed. The Progress property
+   represents the amount of work completed so far.  Your DoWork event
+   handler will increment the Progress property as it does its work.
+   The ProgressWorker also has a ProgressText property which is the
+   shown next to the progress bar in Vegas' status bar.
+
+ * Occasionally, as your DoWork event handler performs its task, it
+   should check to see if the user has canceled the operation using
+   the Canceled property of the ProgressWorker.  If so, it should exit
+   as soon as possible.  If you need to cancel the operation yourself,
+   set the Cancel property of the ProgressWorkerEventArgs object that
+   is passed to your DoWork event handler.
+
+ * If you require user interaction at some point during your task, you
+   can set the NeedUserInput property of the ProgressWorkerEventArgs
+   object that is passed to your DoWork event handler.  After you
+   return from the DoWork event, the CompleteWork event occurs (back
+   on the main window thread) where you can perform your user
+   interaction.  After you return from CompleteWork, the DoWork event
+   will occur again so you can continue your operation.  Finally, the
+   CompleteWork event occurs again.
+
+ * Some asynchronous operations benefit from a having a status dialog
+   that appears while the work is in progress.  You can set the
+   StatusDialog property of the ProgressWorker to a Form that Vegas
+   will show when the work begins and destroy when the work completes.
+   Sometimes, you may want to enqueue several related workers that
+   share the same status dialog.  To achieve this, you can assign them
+   all the same Status dialog and set the KeepStatusDialog property of
+   all but the last ProgressWorker to true.
+
+ * The ProgressWorker has three events designed to help you provide
+   the user with status updates while the work is being done.  Before
+   the DoWork event occurs, the StatusBegin event occurs on the main
+   window thread.  While the work is being done on the worker thread,
+   occasionally Vegas will invoke the StatusUpdate event on the main
+   window thread.  Finally, after the CompleteWork event occurs, the
+   StatusEnd event occurs on the main window thread.
+
+
+* The new CancelAsynchronousTasks method of the Vegas object allows
+  you to cancel any remaining asynchronous tasks (including the
+  current one).  This includes renders, building audio peaks, and any
+  ProgressWorkers that may have been queued.
+
+
+* The script menu is now populated by scanning multiple directories in
+  much the same way Vegas scans for custom command modules.  The
+  directories are scanned in the following order:
+
+[code]
+C:\Documents and Settings\<username>\My Documents\Vegas Script Menu\ 
+C:\Documents and Settings\<username>\Local Settings\Application Data\Sony\Vegas Pro\8.0\Script Menu\ 
+C:\Documents and Settings\<username>\Application Data\Sony\Vegas Pro\8.0\Script Menu\ 
+C:\Documents and Settings\All Users\Application Data\Sony\Vegas Pro\8.0\Script Menu\ 
+C:\Documents and Settings\<username>\Local Settings\Application Data\Sony\Vegas Pro\Script Menu\ 
+C:\Documents and Settings\<username>\Application Data\Sony\Vegas Pro\Script Menu\ 
+C:\Documents and Settings\All Users\Application Data\Sony\Vegas Pro\Script Menu\ 
+[/code]
+
+
+* Script configuration files can now specify the display strings and
+  icon file shown in the script menu, toolbar, etc.  Three new XML
+  elements provided the relevant information:
+
+ * <DisplayName>: The inner text of this element specifies the
+   tool-tip and script name in the keybindings dialog.
+
+ * <MenuItemName>: The inner text of this element specifies the string
+   shown in the script menu item.  typically this is the same as the
+   display name but it may include an ampersand to specify keyboard
+   accelerator key character (you will use the '&amp;' escape sequence
+   in your xml... see example below).
+
+ * <IconFile>: The inner text of this element specifies the file name
+   of the 16x16 PNG file to use for the script's menu and toolbar
+   icon.  This path can be absolute or relative to the script
+   configuration file.
+
+  Below is an example script configuration file that utilizes these new
+  elements:
+
+[code]
+<?xml version="1.0" encoding="UTF-8" ?>
+<ScriptSettings>
+  <DisplayName>Sample Script 1</DisplayName>
+  <MenuItemName>Sample Script &amp;1</MenuItemName>
+  <IconFile>SampleScriptDefault.png</IconFile>
+</ScriptSettings>
+[/code]
+
+
+* Script and Custom Command icons must now be provided in 32-bit PNG
+  files.  Previously, 8-bit files would work (sort-of) but led to
+  invalid toolbar and menu gyphs.  The images must also now be exactly
+  16 pixels wide and 16 pixels tall.
+
+
+* Track motion data is now scriptable. VideoTrack objects now have
+  TrackMotion and ParentTrackMotion properties which allow you to get
+  the TrackMotion object that provides access to the relevant track
+  motion keyframe data.  For further details, see the documentation
+  for the following classes:
+ 
+   TrackMotion
+   BaseTrackMotionKeyframe
+   TrackMotionKeyframe
+   TrackShadowKeyframe
+   TrackGlowKeyframe
+   BaseTrackMotionKeyframeList
+   TrackMotionKeyframeList
+   TrackShadowKeyframeList
+   TrackGlowKeyframeList
+   TrackMotionScaleFactors
+
+ * The raw track motion keyframe data that Vegas stores is relative to
+   the project's video height and aspect ratio.  The values you see in
+   the user interface are scaled to show pixel values.  Similarly, the
+   TrackMotion object has a ScaleFactors property which maps the raw
+   keyframe data to more user friendly values.  If you change the
+   project video properties while referencing TrackMotion objects, you
+   may need to call the Reset method.  If you want to work with the
+   raw data, you can call the Clear method.  You can also manipulate
+   each scale factor individually.
+
+ * Two track motion keyframes of the same type cannot occupy the same
+   timeline position.  If you attempt to add a keyframe with the same
+   position as another, Vegas will place the new keyframe slightly
+   after the existing one.  Also, if you set the Position property of
+   one keyframe to the same value of another, the keyframes will be
+   adjusted slightly so that they do not have the same position.
+
+
+* New methods, SetCompositeMode and SetParentCompositeMode, on
+  VideoTrack objects assign a composite mode much like setting the
+  CompositeMode and ParentCompositeMode properties.  However, the new
+  methods provide the option to show the dialog that asks if it is OK
+  to discard track motion data when switching between 3D and 2D modes.
+
+
+* Added support for assignable audio effect (FX) buses.  A new
+  subclass of AudioBusTrack, called AudioFXBusTrack, represents an FX
+  bus.  AudioFXBusTrack objects have 1 or more Effect objects in their
+  Effects collection.  You can not remove the only remaining effect
+  but you can remove the FX bus itself.  New EnvelopeType enumeration
+  values, FX1 - FX32, allow you to manipulate audio track sends to FX
+  buses.
+
+
+* Scripts that operate on projects with a large number of events may
+  see a significant improvement in performance because the scripting
+  API now delays calculation of internal data until it is needed.
+  Previously adding, removing, or repositioning an event (among other
+  things) would force immediate recalculation of the internal data and
+  could lead to very long delays.
+
+
+* The EntryPoint class for CodeDOM scripts may now be declared in any
+  namespace.  Previously, it was required at the top level namespace.
+
+
+* New method, GetSelectedMedia, on the MediaPool object returns an
+  array containing the Media objects that are currently selected in
+  the Project Media window.  If no media is selected or the Project
+  Media Window is closed, the array will have no items.  The order of
+  items in the array is undefined.
+
+
+* New CustomDataContainer class allows you to store data in a Vegas
+  project and retrieve it later.  Each piece of custom data is
+  associated a user specified unique id which is a Guid. Custom data
+  can be read or written as a Stream, Byte array, or serializable
+  Object.  Four classes of object have a new CustomData property which
+  is a CustomDataContainer: Project, Track, TrackEvent, and Media.
+
+
+* The new NormalizeGain property of AudioEvent objects allows you to
+  get or set the gain used for normalization.  When you set the
+  NormalizeGain property, Vegas will automatically enable
+  normalization.  When you set the Normalize property, Vegas will
+  always reset the NormalizeGain property to a default value (based on
+  the audio peaks).  Setting Normalize to true still builds audio
+  peaks if needed as does the RecalculateNorm method, which restores
+  the default gain value.  To avoid calculations related to audio
+  peaks, use the new SetNormalize method which sets both values
+  regardless of audio peak values.
+
+
+
+* New Renderer properties:
+
+ * The SupportsMultistream property indicates whether the renderer
+   supports multiple media streams.
+
+ * The SupportsMarkers property indicates whether the renderer
+   supports media markers and/or regions.
+
+ * The SupportsCommands property indicates whether the renderer
+   supports command markers.
+
+ * The FileExtensions property returns an array of strings containing
+   the full set of file extension supported by the renderer.  This
+   array will contain for renderers that support more than one type of
+   file.  For renderers that have more than one file extension, the
+   FileExtension property returns the first extension in the
+   FileExtensions array.
+
+
+* The RenderTemplate class now has a FileExtensions property which
+  returns an array of extension strings for the files it will create.
+  Templates that have more than one extension will produce more than
+  one file.
+
+
+* The BeginRender method of the Vegas object allows custom commands
+  and dockable controls to start rendering a project without waiting
+  for the operation to complete.  After a render has started, you can
+  call the WaitForIdle method to wait for the operation to complete.
+  You can also subscribe to the RenderStarted, RenderProgress, and
+  RenderFinished events.
+
+
+* Setting CompositeLevels property of VideoTrack objects to invalid
+  values (outside the range of 0 to 1) no longer throws an exception.
+  Instead, the composite level is bound to values within the valid
+  range.
+
+
+* The VideoColor class now represents red, green, blue, and alpha as
+  individual floating point values in the range of 0.0 to 1.0 rather
+  than byte values in the rage of 0 to 255.  The new Red, Green, Blue,
+  and Alpha properties provide access to the float values.  For
+  backward compatibility, the R, G, B, and A properties are still
+  provide byte values, performing the necessary conversion.  There are
+  constructors for either float or byte values.  However, JScript code
+  always calls the float constructors which will not perform the
+  conversion you may desire.  To deal with this JScript problem, a new
+  static method, FromByteValues, is provided to create a VideoColor
+  individual byte values.  The VideoColor class also now overrides
+  equality methods (Equals, GetHashCode, ==, and !=).
+
+
+* Markers and regions (of all types) can now have at the same position
+  as another marker or region in the same list.  Previously,
+  exceptions were thrown if a marker or region was added or positioned
+  where another already exists.
+
+
+* Effects can now be inserted (by index) into effect lists using the
+  Insert method or the list item operator of the Effects collection
+  class.  For example, the following code inserts an effect at index 3
+  of the master audio bus:
+  
+     project.BusTracks.MasterBus.Effects[3] = new Effect(plugIn);
+
+
+* The new Bypass property of Effect objects allow you to get or set
+  whether the effect is bypassed.
+
+
+* The new Index property of EffectPreset objects returns their index
+  in the EffectPresets list.
+
+
+* The new IsUntitled property of the Project class indicates whether
+  the project is untitled and has not yet been saved.  This can
+  differentiate from an unsaved version of a project named "Untitled".
+
+
+* The new BypassMotionBlur property of the VideoTrack class allows you
+  to bypass motion blur for the track.
+
+
+* New Media object properties, RecordedDateTime, Rating, and
+  VideoCaptureComment, allow you to read these values when available.
+  When RecordedDateTime is not available, the return value will be
+  DateTime.MinValue.  When Rating and VideoCaptureComment are not
+  available, the return values will be null.
+
+
+* MediaStream objects now have a Parent property which returns the
+  Media object that contains the stream.
+
+
+* The Length property of generated Media objects can now be set.  This
+  method will throw an exception for offline and non-generated media.
+
+
+* The VideoStream object now has a Size property which returns the
+  pixel dimensions of the video frame in a System.Drawing.Size
+  structure.  Previously, the Width and Height properties had to be
+  read separately.  For generated media, the Size property can also be
+  set.
+
+
+* The new AudioTrack properties, Volume, PanX, PanY, and PanCenter,
+  allow you to adjust the corresponding audio track header trim
+  values.
+
+
+* New methods, OpenFile and ImportFile, on the Vegas object allow you
+  to open and import files.  These methods allow you to (optionally)
+  bring a media file directly to the timeline (on the selected track,
+  at the insertion point).  The ImportFile method allows you to bring
+  nested projects into the current project.
+
+  There are also new interactive methods, OpenFileDialog and
+  ImportFileDialog, which allow the user to select files using Vegas'
+  Open/Import dialog box.
+
+  These new methods do not wait for audio peaks to be built.  When you
+  need to wait for peaks, call the WaitForIdle method (described
+  below) after the new file open/import method returns.
+
+  These new methods make the OpenProject methods obsolete.
+
+
+* The new method, WaitForIdle, on the Vegas object will wait for any
+  pending asynchronous actions to complete such as building audio
+  peaks, opening project files, rendering media files, etc.
+
+
+* Custom commands can run scripts using new RunScriptFile and
+  RunScriptText methods of the Vegas object.  These methods will fail
+  if called from within a script.
+
+
+* New Timecode methods help address problems with converting strings
+  to timecode (and vice-versa) when the project ruler start time is
+  not zero.  The new methods allows you to indicate that the timecode
+  represents a position on the timeline rather than a duration so that
+  the ruler offset is taken into account when converting to or from a
+  string.
+
+
+* A new TransportControl class allows you to control playback.  The
+  Transport property of the Vegas object provides access to playback
+  and various other aspects the main timeline. Since playback is
+  asynchronous in Vegas, most transport control operations executed by
+  a script will not take effect until after the script completes.
+  Also, playback is always stopped prior to running a script.
+  Transport control commands are most useful to custom commands.
+
+
+ * The Vegas SelectionStart and SelectionLength properties are now
+   obsolete.  Now you should use the TransportControl object.
+
+ * The implementation of the SelectionStart and SelectionLength
+   properties of the Vegas object are equivalent to the PlayLoopStart
+   and PlayLoopLength properties of the TransportControl object.  The
+   TransportControl class also has SelectionStart and SelectionLength
+   properties which effect both the play loop and the time selection
+   (the highlighted region of the timeline).
+
+ * The cursor position is the same as the SelectionStart of the
+   TransportControl object.  Often the SelectionLength is a negative
+   value which means the cursor rests at the right end of the
+   selection (the selection was made by dragging the mouse from left
+   to right).  A positive SelectionLength means the cursor rests on
+   the left end of the selection.  If the SelectionLength is 0, there
+   is no selected region and the cursor rests at SelectionStart
+   (however, there may still be a distinct loop region when there is
+   no selected region).
+
+ * The ViewCursor method of the TransportControl object allows you to
+   horizontally scroll the track view so that the cursor is visible.
+   This, along with setting the CursorPosition property gives you the
+   ability to seek positions on the timeline.  Keep in mind that
+   rendering is performed asynchronously so this is not a reasonable
+   means of performing specialized scrubbing or playback.
+
+ * The ZoomSelection method of the TrackPosrtControl object allows you
+   to zoom (and scroll) the track view to fit the current selection.
+
+ * The Cursor property of the Vegas object in now obsolete. Use the
+   CursorPosition property of TransportControl object instead.
+
+ * The LoopPlayback property of the Vegas object is now obsolete. Use
+   the LoopMode property of TransportControl object instead.
+
+ * The Suspend method of the TransportControl class allows you to
+   temporarily suspend the current transport mode.  The method returns
+   an IDisposable object which resumes transport when its Dispose
+   method is called.  This object is meant for use in a C# 'using'
+   statement.  You typically will not need to suspend transport but it
+   can be necessary for some operations such as replacing media files.
+   Scripts should never need to suspend transport since it is stopped
+   before the script runs.
+
+
+* The new AddEffect method of the Effects collection class provides a
+  shortcut for adding new effects.
+
+
+* The new Effect property of Keyframe objects returns the Effect that
+  is associated with the keyframe.
+
+
+* The new OutputRotation property of the ProjectVideoProperties class
+  allows you to get or set the output rotation setting for the
+  current project.
+
+ 
+* The new Rotation property of VideoStream objects allows you to get
+  or set the rotation setting for the video stream.
+
+
+* The new UseProjectRotation property of the RenderArgs class allows
+  you to specify whether to use project output rotation settings when
+  rendering a file.
+
+* The new PixelFormat property of the ProjectVideoProperties object
+  allows you to get or set the pixel format (8-bit integer or 32-bit
+  floating point) used to render the video in the project.
+
+* When setting various properties (Width, Height, FrameRate, and
+  PixelAspectRatio) of the ProjectVideoProperties class, Vegas will
+  now silently bound the values rather than throw an exception when
+  invalid values are encountered.
+
+
+* A problem with adding envelopes to a track that is selected when
+  other tracks are selected has been fixed.  Previously the envelope
+  would also be added to the other selected tracks.  Now it is only
+  added to the specified track.
+
+
+* The problem that Vegas would not update the the video preview
+  display after running a script that changes the project's video size
+  has been fixed.
+
+
+* New convenience properties & methods:
+ * public VideoBusTrack Project::VideoBus { get; }
+ * public AudioBusTrack Project::MasterBus { get; }
+ * public VideoTrack Project::AddVideoTrack()
+ * public AudioTrack Project::AddAudioTrack()
+ * public AudioBusTrack Project::AddAudioBusTrack()
+ * public VideoEvent VideoTrack::AddVideoEvent()
+ * public AudioEvent AudioTrack::AddAudioEvent()
+ * public Take TrackEvent::AddTake()
+ * public VideoStream Media::GetVideoStreamByIndex()
+ * public AudioStream Media::GetAudioStreamByIndex()
+
+
+* The BaseList class, which is the base class for most collections of
+  Vegas objects, now implements the System.Collections.Generic.IList
+  interface.  This helps avoid type casting and improved performance
+  in C# code.
+
+ * Some changes may effect code that relies on Remove, RemoveAt,
+   IndexOf, and Contains methods to throw exceptions under certain
+   circumstances.  Now we try not to throw any exceptions from these
+   methods.
+
+ * There are now type-specific versions of each marker list
+   (MarkerList, RegionList, CDRegionList, CDTrackList,
+   CommandMarkerList, MediaMarkerList, and MediaRegionList). All of
+   these inherit from generic BaseMarkerList and BaseList classes.
+   Scripts that previously referred to the Markers collection class
+   specifically may require minor changes.
+
+ * Contains and IndexOf methods are now implemented for lists of
+   Track, BusTrack, TrackEvent, Take, Envelope, EnvelopePoint, Effect,
+   Keyframe, and Marker objects.
+
+ * Some changes may effect JScript code that relies on the return
+   value of the Add methods of list classes.  The Add method of
+   non-generic IList interface returns the index of the added item
+   while the generic IList interface has no return value.  JScript
+   code will always call generic implementation it can no longer rely
+   on the return value.
+
+ * The BaseListEnumerator class no longer exists.  Enumeration is now
+   implemented using the 'yeild' construct.  This should not effect
+   most code.  C# code that refers to BaseListEnumerator should use
+   the IEnumerator interface or a foreach statement.  JScript code
+   that calls GetEnumerator will encounter "Function expected" errors
+   when it calls the IEnumerator.MoveNext() method so it should use
+   Enumerator objects rather than the IEnumerator interface.  For
+   example, the following JScript code:
+
+     [code]
+     var e = Vegas.Project.Tracks.GetEnumerator();
+     while (e.MoveNext()) {
+        var track = e.Current;
+        // do something
+     }
+     [/code]
+
+   should be changed to:
+
+     [code]
+     var e = new Enumerator(Vegas.Project.Tracks);
+     while (!e.atEnd()) {
+        var track = e.getItem;
+        // do something
+        e.moveNext();
+     }
+     [/code]
+
+ * Previously, the Contains of EnvelopePoints collection method would
+   accept either EnvelopePoint or Timecode objects.  Now, only
+   EnvelopePoint objects are accepted.  If you need to determine if an
+   envelope point exists at a specific time, use the GetPointAtX
+   method which will return null if a point is not found at the
+   provided time.
+
+
+
+
+
+
+
+
+                           VEGAS 7.0
+
+* Two properties and one method have been added to Take objects to
+  help scripts work with multichannel audio.  The properties are read
+  only:
+
+    /// <summary>Get the zero-based index of the first audio stream channel used for the take.</summary>
+    public Int32 FirstAudioChannelIndex
+
+    /// <summary>Get the number of audio channels used for the take.</summary>
+    public Int32 AudioChannelCount
+
+  The method allows you to set both of these properties at the same
+  time:
+
+    /// <summary>Set the index and number of audio channels used for the take (valid only for audio streams with 3 or more channels).</summary>
+    /// <param name="firstChannelIndex">Zero-based index of the first audio channel.</param>
+    /// <param name="channelCount">Number of audio channels (1 or 2).</param>
+    public void SetAudioChannels(Int32 firstChannelIndex, Int32 channelCount)
+
+  For stereo and mono audio streams, the default behavior must be
+  preserved so SetAudioChannels will throw an exception when the
+  Take's MediaStream is not a multichannel audio stream (that is an
+  audio stream with 3 or more channels).
+
+
+* It is now possible bypass the missing media dialog(s) when a script
+  opens a project that contains missing media files.  To achieve this,
+  the script must subscribe to the Vegas object's new MissingMedia
+  event as shown in the following sample code:
+
+  public void OpenProjectWithMissingMedia(Vegas vegas, String projectFile)
+  {
+      vegas.MissingMedia += this.HandleMissingMedia;
+      vegas.OpenProject(projectFile);
+  }
+
+  public void HandleMissingMedia(Object sender, MissingMediaEventArgs args)
+  {
+      // to ignore the missing media and leave it offline, set the
+      // IgnoreMissingMedia property to true.
+      args.IgnoreMissingMedia = true;
+  }
+
+  The MissingMediaEventArgs also has a MissingMedia property which
+  tells you the name of the missing media file.  However, when the
+  MissingMedia event is triggered, the project being opened is still
+  not the active project so you can not get the corresponding Media
+  object from the MediaPool until after the OpenProject method
+  returns.
+
+
+* Scripts can now monitor the progress of a render by subscribing to 3
+  events prior to calling Vegas's Render method.  They are declared as
+  follows in the Vegas object:
+
+    public event EventHandler RenderStarted;
+    public event RenderStatusEventHandler RenderProgress;
+    public event RenderStatusEventHandler RenderFinished
+
+  The RenderStatusEventHandler delegate is declared as:
+
+    public delegate void RenderStatusEventHandler(Object sender, RenderStatusEventArgs args);
+
+  And finally RenderStatusEventArgs object have the following properties:
+
+    /// <summary>Get the current status of the render operation.</summary>
+    public readonly RenderStatus Status;
+
+    /// <summary>Get the result code (HRESULT) of the render operation.</summary>
+    public readonly Int32 Result;
+
+    /// <summary>Get the error message string (if any) for the render operation.</summary>
+    public readonly String ErrorMessage;
+
+    /// <summary>Get the percent of the render operation that has completed.</summary>
+    public readonly Int32 PercentComplete;
+
+  For RenderProgress events, the PercentComplete property is the only
+  relevant property.  For RenderFinished events, the Result and
+  ErrorMessage are only relevant when the Status field is
+  RenderStatus.Failed.  Obviously, scripts should not try to modify
+  the project in these event handlers.
+ 
+
+* Scripts still run in a separate app domain but the script domain is
+  not unloaded by default after a script runs.  This should improve
+  the user experience by making scripts run faster... especially
+  precompiled scripts that users run more than once. If you are
+  developing a precompiled script or one that references precompiled
+  assemblies, you can force Vegas to unload the script domain setting
+  the Vegas object's 'UnloadScriptDomainOnScriptEdit' property to
+  true.  This will allow you to recompile your assembly without
+  restarting Vegas.  But don't forget to take it out when you release
+  your script.
+ 
+
+* A new property of the Renderer class, SupportsMultichannel,
+  indicates whether it supports multichannel audio rendering.  A new
+  property of the RenderArgs class, UseChannelMapping, indicates
+  whether the project's audio channel mappings are used to render a
+  multichannel media file.
+
+
+* The PreviewVideoProperties.FullSize property is depricated. Now you
+  should use the PreviewVideoProperties.PreviewSize property along
+  with the new VideoPreviewSize enumeration.  This allows you to set
+  the video preview render size to auto, full, half, and quarter.
+
+
+* The message text for all exceptions thrown in the scripting API are
+  being localized.
+
+
+* Many exceptions thrown within scripting API have been changed to
+  instances of ApplicationException, ArgumentException, etc.
+  Previously some exceptions were instances of the Exception base
+  class.
+
+
+* Change to the Remove method of various object collections. If the
+  collection does not contain the specified object, the collection
+  remains unchanged and no exception is thrown.  Previously,
+  exceptions were thrown for some collection classes.  The new
+  bahavior matches the bahavior of collection classes like
+  ArrayList. Some exceptions apply such as when you attempt to remove
+  the root media bin, remove the first envelope point, or remove media
+  from the media pool when it is still in use.
+
+* Interop assembly (Interop.VegasCOM.dll) is gone.
+
+
+* Vegas.FileUtilities interface provides access to commonly used
+  file-related utilities.
+
+
+* Enhanced Render Image Sequence script to allow different file naming
+  conventions and to allow option for files to be overwritten.
+
+
+* More flexible means of resolving script assembly references.
+  AssemblyReference elements in script config files may now contain a
+  'resolver' attribute which indicates where to look for the
+  referenced assembly.  For example:
+
+<ScriptSettings>
+  <MainClass>TestExtVid</MainClass>
+  <AssemblyReference resolver="local">Local.dll</AssemblyReference>
+  <AssemblyReference resolver="appdir">Shared.dll</AssemblyReference>
+</ScriptSettings>
+
+The "local" resolver is like the old IsLocal="true" attribute... it
+looks for the assembly in the same directory that contains the script.
+
+The "appdir" resolver looks for the assembly in Vegas' install dir.
+
+
+* New RenderTemplate.Description property allows scripts to get the
+  template's description text.
+
+
+* overrides for PlugInNode: Equals, GetHashCode, ==, and != operators.
+
+
+
+
+                           VEGAS 6.0D
+
+* Fixed problem with RenderArg flags (such as IncludeMarkers).
+  Previously, when they were set to false, they may not effect the
+  actual render settings.
+
+
+
+
+                           VEGAS 6.0C
+
+* Changed Vegas.ApplicationDataPath from static to non-static method.
+
+* Added support for accessing media markers and regions (read only)
+  via new Media.Markers and Media.Regions collections.
+
+
+
+
+                           VEGAS 6.0B
+
+* Add ability to get audio channel flags for render templates. This
+  uses a new enumeration called AudioChannelFlags.
+
+* Convert Batch Render script to C# and fix problems with replacing
+  illegal filename characters and not filtering out surround templates
+  when project is stereo.
+
+* Fix problems with TrackEvent.AdjustStartLength.  The problem mainly
+  occured when moving an event with multiple takes to the left.  The
+  name/meaning of the third parameter of AdjustStartLength has been
+  changed from adjustLeft to adjustTakes.  Now, when adjustTakes is
+  true, the offset of each take is altered depending on serveral other
+  variables including whether the event is looped, the playback rate
+  of the event, the length of the take's media stream, and the change
+  being made to the event.
+
+* Allow shortcuts (.lnk files) with script args to be used via the
+  "Tools.Run Script" open file dialog and Vegas' SCRIPT command line
+  argument.  Previously it only worked when they were located in the
+  Script Menu directory.
+
+* Fix problems with VSA VB scripts not running.
+
+
+
+
+
+                           VEGAS 6.0A
+
+Here's what is new in Vegas 6.0a for scripting. The new API docs can
+be found <a href="http://www.ayizwe.net/VegasScripts/">here</a>.
+
+* Scripts now run in their own app domain which is loaded and unloaded
+  each time a script is run.  This allows referenced assemblies to be
+  recompiled without restarting Vegas and fixes various problems.
+
+
+* Vegas now supports CodeDom compilers.  This allows scripts to be
+  written in C# as well as JScript and VB.  Vegas also now supports
+  precompiled scripts which can be written in any CLR language.
+  Precompiled script have better performance by allowing Vegas to
+  bypass compilation each time the script is run.  By default, JScript
+  and VB still use the VSA script engines but they can be converted to
+  CodeDOM by adding the following element to their script config
+  files:
+
+    <UseCodeDomCompiler>true</UseCodeDomCompiler>
+
+  CodeDom and precompiled scripts require an entry point that Vegas
+  calls to begin execution.  By default, this is a class named
+  "EntryPoint" with a method named "FromVegas:.  Here is a sample C#
+  script:
+
+using System;
+using System.Windows.Forms;
+using Sony.Vegas;
+
+public class EntryPoint
+{
+    public void FromVegas(Vegas vegas)
+    {
+        MessageBox.Show(vegas.Version);
+    }
+}
+
+  The EntryPoint class is defined in the top level namespace (not
+  within any namespace statements).  The FromVegas method can have a
+  variety of arguments.  Here are the options:
+
+      public void FromVegas(Vegas vegas)
+      public void FromVegas(Vegas vegas, String scriptFile)
+      public void FromVegas(Vegas vegas, String scriptFile, XmlDocument scriptSettings)
+      public void FromVegas(Vegas vegas, String scriptFile, XmlDocument scriptSettings, ScriptArgs args)
+
+  Vegas will call the version with the greatest number of arguments.
+  It is possible to use a different class for your entry point by
+  specifying the class name in your script config file. For example,
+  the following element will instruct Vegas to create an instance of
+  the class named MyClass declared in the namespace MyNamespace and
+  call its FromVegas method:
+
+    <MainClass>MyNamespace.MyClass</MainClass>
+
+
+* Shortcuts (.lnk files) located in the script menu directory can be
+  used invoke scripts located in another directory.  Shortcuts can
+  also be used to specify ScriptArg values which are passed to the
+  script as an entry point method parameter for CodeDom and
+  precompiled scripts or as a global variable named "ScriptArgList"
+  for VSA scripts.  To specify ScriptArgs in a shortcut file, first
+  right-click on the shortcut and select Properties.  The Target field
+  of the Shortcut tab in the properties dialog will contain the path
+  to your script.  After the path, you can append script arguments as
+  name/value pairs.  For example, in the shortcut target field,
+  specify the following:
+
+    C:\Vegas Scripts\TestScript.cs msgEN=hello world&msgES=hola mundo
+
+  Make sure there is a space between the script path and the first
+  script argument.  Argument names and values are separated by the '='
+  character and additional pairs are separated by the '&' character.
+  Below in an example of the reading argument values from the
+  ScriptArgs object:
+
+public class EntryPoint
+{
+    public void FromVegas(Vegas vegas, String scriptFile, XmlDocument scriptSettings, ScriptArgs args)
+    {
+        MessageBox.Show(args.ValueOf("msgEN", false));
+        MessageBox.Show(args.ValueOf("msgSP", false));
+    }
+}
+
+  See the scripting API documentation for more details on using the
+  ScriptArgs class.  Icons for shortcuts in the script menu should be
+  named similarly to how they're named for scripts. For example, if
+  your shortcut is named "MyScript.lnk", its icon should be named
+  "MyScript.lnk.png".
+
+
+* Video track compositing properties:
+
+     VideoTrack.CompositeLevel
+     VideoTrack.CompositeMode
+     VideoTrack.CompositeModeEffect
+     VideoTrack.ParentCompositeMode
+     VideoTrack.ParentCompositeModeEffect
+     VideoTrack.CompositeNestingLevel
+     VideoTrack.IsCompositingChild
+     VideoTrack.IsCompositingParent
+
+
+* Event sync properties and methods:
+
+    TrackEvent.SyncOffset
+    TrackEvent.SyncEvent
+    TrackEvent.SyncByMove()
+    TrackEvent.SyncByMove()
+    TrackEvent.SyncBySlip()
+
+
+* Equals method and equality operators (== and !=) are now overridden
+  for the following classes:
+
+    Track
+    AudioTrack
+    VideoTrack
+    TrackEvent
+    AudioTrackEvent
+    VideoTrackEvent
+    BusTrack
+    AudioBusTrack
+    VideoBusTrack
+    Envelope
+    EnvelopePoint
+    Marker
+    Region
+    CDMarker
+    CDRegion
+    CommandMarker
+    Media
+    Subclip
+    Take
+    Timecode
+    TrackEventGroup
+
